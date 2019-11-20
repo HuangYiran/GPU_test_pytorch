@@ -3,7 +3,7 @@ train picture classification model to compare the performance between cpu and gp
 
 # Introduction
 Pytorch GPU
-
+## Theory
 单GPU加速
 1. 确定GPU是否可用，torch.cuda.is_available()
 2. 确定可用GPU数量，torch.cuda.device_count()，或通过nvidia-smi查看
@@ -25,6 +25,24 @@ Pytorch GPU
 2. GPU很快，单数据量较小时，效果可能没有单GPU好，甚至还不如CPU
 3. 如果内存不够大，使用多GPU驯良的时候可通过设置pin_memory为False，当然使用进度稍微低一点的数据类型时也有效
 
+## Practice
+### model to cuda
+```
+gpus = [0] # which gpu to use
+if torch.cuda.is_available():
+    model = torch.nn.DataParallel(model, device_ids=gpus).cuda()
+```
+### data numpy to cuda
+```
+if torch.cuda.is_available():
+    b = Variable(torch.from_numpy(b).cuda())
+```
+
+### output to numpy
+if torch.cuda.is_available():
+    p = p.cpu().numpy()
+
+# Test with examples
 ## Test CPU performance
 run picture classfication model with cpu, store the result at result_cpu.txt.<br>
 - python codes/cpu_test.py
